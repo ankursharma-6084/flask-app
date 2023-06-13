@@ -1,0 +1,23 @@
+from flask import Flask, jsonify, request
+from request_logger import log_request_body
+
+app = Flask(__name__)
+
+# Sample data
+books = []
+
+# Endpoint to add a new book
+@app.route('/books', methods=['POST'])
+def add_book():
+    new_book = request.get_json()
+    books.append(new_book)
+    log_request_body(request)  # Call the function from the imported module
+    return jsonify(new_book), 201
+
+if __name__ == '__main__':
+    app.run()
+
+
+def log_request_body(request):
+    req_body = request.get_json()
+    print("Received request body:", req_body)
