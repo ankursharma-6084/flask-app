@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Frontend App</title>
+</head>
+<body>
+  <input type="text" id="inputText" placeholder="Enter a value">
+  <button onclick="sendData()">Send</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+
+function sendData() {
+  var inputValue = document.getElementById("inputText").value;
+
+  // Make a POST request to the Flask backend
+  fetch('http://localhost:5000/data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ input: inputValue })
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Handle the response from the Flask backend
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/data', methods=['POST'])
+def receive_data():
+    data = request.json
+    input_value = data.get('input')
+    # Process the input value as needed
+
+    # Return a response
+    response = {'message': 'Data received successfully'}
+    return jsonify(response)
+
+if __name__ == '__main__':
+    app.run()
